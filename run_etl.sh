@@ -25,6 +25,6 @@ aws sts get-caller-identity || {
 
 # --- Run ETL Python script ---
 echo "Running ETL script..."
-python3 etl_rds_to_delta.py
+python etl_rds_to_delta.py
 
 echo "ETL run complete."
