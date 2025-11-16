@@ -1,0 +1,27 @@
+name: Run ETL Pipeline
+
+on:
+  workflow_dispatch:  # allow manual/ad-hoc runs
+
+jobs:
+  etl-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run init.sh
+        run: |
+          chmod +x init.sh
+          ./init.sh
+
+      - name: Run ETL script
+        run: |
+          chmod +x run_etl.sh
+          ./run_etl.sh
