@@ -34,15 +34,23 @@ for table in tables:
     print(f"Extracting table: {table}")
     target_path = f"{bucket}/{table}_delta/"
 
-    # Stream rows in chunks to avoid memory blowups
     for i, chunk in enumerate(pd.read_sql(f"SELECT * FROM {table};", conn, chunksize=50000)):
+        # Fix null-only columns by coercing to string
+        for col in chunk.columns:
+            if chunk[col].isnull().all():
+                chunk[col] = chunk[col].astype("string")
+
         print(f"  Writing chunk {i+1} of {table}, rows={len(chunk)}")
-        write_deltalake(
-            target_path,
-            chunk,
-            mode="append",  # append chunks to same Delta table
-            storage_options={"AWS_REGION": "eu-north-1"}
-        )
+        try:
+            write_deltalake(
+                target_path,
+                chunk,
+                mode="append",  # append chunks to same Delta table
+                storage_options={"AWS_REGION": "eu-north-1"}
+            )
+        except Exception as e:
+            print(f"❌ Failed to write chunk {i+1} of {table}: {e}")
+            break
 
     print(f"✅ Finished writing {table} to {target_path}")
 
