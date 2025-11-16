@@ -3,15 +3,37 @@ set -e
 
 echo "Starting ETL pipeline..."
 
-# --- Export secrets from GitHub Actions environment ---
+# --- Export secrets from environment (injected by GitHub Actions or Codespaces) ---
 export PG_VENDOR_PASS="${PG_VENDOR_PASS}"
 export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
 export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
 export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}"
 
 # --- Sanity check for required secrets ---
-if [ -z "$PG_VENDOR_PASS" ] || [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ] || [ -z "$AWS_DEFAULT_REGION" ]; then
-  echo "Error: One or more required secrets are missing."
+missing=false
+
+if [ -z "$PG_VENDOR_PASS" ]; then
+  echo "❌ Missing secret: PG_VENDOR_PASS"
+  missing=true
+fi
+
+if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+  echo "❌ Missing secret: AWS_ACCESS_KEY_ID"
+  missing=true
+fi
+
+if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+  echo "❌ Missing secret: AWS_SECRET_ACCESS_KEY"
+  missing=true
+fi
+
+if [ -z "$AWS_DEFAULT_REGION" ]; then
+  echo "❌ Missing secret: AWS_DEFAULT_REGION"
+  missing=true
+fi
+
+if [ "$missing" = true ]; then
+  echo "Aborting: one or more required secrets are missing."
   exit 1
 fi
 
