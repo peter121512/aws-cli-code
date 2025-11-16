@@ -1,5 +1,5 @@
 import os
-import psycopg2
+import psycopg2  # using psycopg2-binary
 import pandas as pd
 from deltalake.writer import write_deltalake
 from deltalake import DeltaTable
