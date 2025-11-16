@@ -3,11 +3,9 @@ import psycopg2  # using psycopg2-binary
 import pandas as pd
 from deltalake.writer import write_deltalake
 from deltalake import DeltaTable
-from dotenv import load_dotenv
 
 # --- Load environment variables ---
-load_dotenv()
-pg_pass = os.getenv("PG_VENDOR_PASS")
+pg_pass = os.getenv("PG_VENDOR_PASS")  # from GitHub secret
 
 # --- Database connection ---
 conn = psycopg2.connect(
@@ -38,3 +36,8 @@ print("ETL complete: data written to Delta at", target_path)
 dt = DeltaTable(target_path, storage_options={"AWS_REGION": "eu-north-1"})
 print("Preview of Delta table:")
 print(dt.to_pandas().head())
+
+# --- AWS credentials from GitHub secrets ---
+aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+aws_region     = os.getenv("AWS_DEFAULT_REGION")
