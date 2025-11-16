@@ -3,13 +3,8 @@ set -e
 
 echo "🔁 Starting ETL pipeline..."
 
-# --- Export secrets from environment ---
-export PG_VENDOR_PASS="${PG_VENDOR_PASS}"
-export VENDOR_API_KEY="${VENDOR_API_KEY}"
-export AWS_CONFIG="${AWS_CONFIG}"
-export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
-export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
-export AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION}"
+# --- Environment variables are injected by GitHub Actions or Codespaces ---
+# Python will read PG_VENDOR_PASS, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_DEFAULT_REGION directly
 
 # --- Configure AWS CLI ---
 echo "🔧 Configuring AWS CLI..."
